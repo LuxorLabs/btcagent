@@ -687,7 +687,7 @@ void StratumSessionBitcoin::sendFakeMiningNotify() {
 }
 
 void StratumSessionBitcoin::sendMiningDifficulty(float diff) {
-  sendData(Strings::Format("{\"id\":null,\"method\":\"mining.set_difficulty\",\"params\":[%d]}\n", diff));
+  sendData(Strings::Format("{\"id\":null,\"method\":\"mining.set_difficulty\",\"params\":[%f]}\n", diff));
 }
 
 void StratumSessionBitcoin::sendSubmitResponse(const string &idStr, int status) {
