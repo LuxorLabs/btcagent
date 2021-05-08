@@ -1026,7 +1026,7 @@ void StratumServer::sendFakeMiningNotifyToAll(const UpStratumClient *conn) {
   }
 }
 
-void StratumServer::sendMiningDifficulty(UpStratumClient *upSession, uint64_t diff) {
+void StratumServer::sendMiningDifficulty(UpStratumClient *upSession, float diff) {
   for (auto downSession : downSessions_) {
     if (downSession != nullptr && upSession == &downSession->upSession_) {
       downSession->sendMiningDifficulty(diff);
@@ -1034,7 +1034,7 @@ void StratumServer::sendMiningDifficulty(UpStratumClient *upSession, uint64_t di
   }
 }
 
-void StratumServer::sendMiningDifficulty(uint16_t sessionId, uint64_t diff) {
+void StratumServer::sendMiningDifficulty(uint16_t sessionId, float diff) {
   StratumSession *downSession = downSessions_[sessionId];
   if (downSession == NULL)
     return;

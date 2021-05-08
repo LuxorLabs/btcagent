@@ -70,7 +70,7 @@ public:
   virtual void responseError(const string &idStr, int code) = 0;
   virtual void responseTrue(const string &idStr) = 0;
   virtual void setNoncePrefix(uint32_t noncePrefix) = 0;
-  virtual void setDifficulty(uint64_t difficulty) = 0;
+  virtual void setDifficulty(float difficulty) = 0;
   virtual void sendMiningNotify(const StratumJobEth &sjob) = 0;
 };
 
@@ -81,7 +81,7 @@ public:
   void responseError(const string &idStr, int code) override;
   void responseTrue(const string &idStr) override;
   void setNoncePrefix(uint32_t noncePrefix) override;
-  void setDifficulty(uint64_t difficulty) override;
+  void setDifficulty(float difficulty) override;
   void sendMiningNotify(const StratumJobEth &sjob) override;
   void sendMiningNotifyWithId(const string &idStr, const StratumJobEth &sjob);
 
@@ -114,7 +114,7 @@ class EthProtocolStandard : public EthProtocolStratum {
 public:
   explicit EthProtocolStandard(StratumSessionEth &session) : EthProtocolStratum{session} {}
   void setNoncePrefix(uint32_t noncePrefix) override {};
-  void setDifficulty(uint64_t difficulty) override;
+  void setDifficulty(float difficulty) override;
   void sendMiningNotify(const StratumJobEth &sjob) override;
 
 private:
@@ -129,7 +129,7 @@ class EthProtocolNiceHash : public EthProtocolStratum {
 public:
   explicit EthProtocolNiceHash(StratumSessionEth &session) : EthProtocolStratum{session}, lastDiff_{0}, noncePrefix_{0} {}
   void setNoncePrefix(uint32_t noncePrefix) override;
-  void setDifficulty(uint64_t difficulty) override;
+  void setDifficulty(float difficulty) override;
   void sendMiningNotify(const StratumJobEth &sjob) override;
 
 private:
@@ -137,7 +137,7 @@ private:
   void handleRequest_Submit(const string &idStr, const StratumMessageEth &smsg) override;
   void handleRequest_Authorize(const string &idStr, const StratumMessageEth &smsg) override;
 
-  uint64_t lastDiff_;
+  float lastDiff_;
   string idSubscribe_;
   uint32_t noncePrefix_;
 };
@@ -186,7 +186,7 @@ public:
 
   void sendMiningNotify() override;
   void sendFakeMiningNotify() override;
-  void sendMiningDifficulty(uint64_t diff) override;
+  void sendMiningDifficulty(float diff) override;
   void sendSubmitResponse(const string &idStr, int status) override;
   void getNoncePrefix();
   void setNoncePrefix(uint32_t noncePrefix);

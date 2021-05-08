@@ -35,7 +35,7 @@ static string stripEthAddrFromFullName(const string& fullNameStr) {
 
 static char Diff2TargetTable[] = { 'f', '7', '3', '1'};
 
-static string ethDiff2Target(uint64_t difficulty) {
+static string ethDiff2Target(float difficulty) {
   uint8_t diffLog2 = difficulty ? log2(difficulty) : 0;
   string target;
   target.reserve(64);
@@ -84,7 +84,7 @@ static const uint32_t MAX_NONCE_PREFIX = 0xffffff;
 // difficulty of 1 is transformed to target being in HEX:
 // 00000000ffff0000000000000000000000000000000000000000000000000000
 // @see https://www.nicehash.com/sw/Ethereum_specification_R1.txt
-inline double Eth_DiffToNicehashDiff(uint64_t diff) {
+inline double Eth_DiffToNicehashDiff(float diff) {
   // Ethereum difficulty is numerically equivalent to 2^32 times the difficulty of Bitcoin/NICEHASH_STRATUM.
   return ((double)diff) / ((double)4294967296.0);
 }
@@ -352,7 +352,7 @@ void EthProtocolProxy::setNoncePrefix(uint32_t noncePrefix) {
   session_.handleRequest_Authorize(idLogin_, workerName_);
 }
 
-void EthProtocolProxy::setDifficulty(uint64_t difficulty) {
+void EthProtocolProxy::setDifficulty(float difficulty) {
   // Claymore use 58 bytes target
   target_ = ethDiff2Target(difficulty).substr(6);
 }
@@ -441,7 +441,7 @@ void EthProtocolStandard::handleRequest_Authorize(const string &idStr, const Str
   }
 }
 
-void EthProtocolStandard::setDifficulty(uint64_t difficulty) {
+void EthProtocolStandard::setDifficulty(float difficulty) {
   target_ = ethDiff2Target(difficulty);
 }
 
@@ -498,7 +498,7 @@ void EthProtocolNiceHash::setNoncePrefix(uint32_t noncePrefix) {
   session_.sendData(s);
 }
 
-void EthProtocolNiceHash::setDifficulty(uint64_t difficulty) {
+void EthProtocolNiceHash::setDifficulty(float difficulty) {
   if (difficulty != lastDiff_) {
     // NICEHASH_STRATUM mining.set_difficulty
     // {"id": null,
@@ -710,7 +710,7 @@ void StratumSessionEth::sendFakeMiningNotify() {
   protocol_->sendMiningNotify(fakeJob);
 }
 
-void StratumSessionEth::sendMiningDifficulty(uint64_t diff) {
+void StratumSessionEth::sendMiningDifficulty(float diff) {
   protocol_->setDifficulty(diff);
 }
 

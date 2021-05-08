@@ -104,9 +104,9 @@ TEST(Server, StratumMessageBitcoin_parseMiningSetDifficulty) {
   StratumMessageBitcoin smsg(line);
 
   ASSERT_EQ(smsg.isValid(), true);
-  uint32_t diff = 0u;
+  float diff = 0;
   ASSERT_EQ(smsg.parseMiningSetDifficulty(&diff), true);
-  ASSERT_EQ(diff, 2u);
+  ASSERT_EQ(diff, 2);
 }
 
 TEST(Server, StratumMessageBitcoin_parseMiningSetVersionMask) {

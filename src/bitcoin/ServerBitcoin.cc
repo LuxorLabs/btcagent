@@ -166,7 +166,8 @@ void StratumMessageBitcoin::_parseMiningSetDifficulty() {
     if (jsoneq(&t_[i], "params") == 0 && t_[i+1].type == JSMN_ARRAY && t_[i+1].size == 1) {
       i++;  // ptr move to params
       i++;  // ptr move to params[0]
-      const uint32_t diff = (uint32_t)strtoul(getJsonStr(&t_[i]).c_str(), NULL, 10);
+      char* pend;
+      const float diff = (float)strtof(getJsonStr(&t_[i]).c_str(), &pend);
 
       if (diff > 0) {
         diff_ = diff;
@@ -314,7 +315,7 @@ bool StratumMessageBitcoin::parseMiningNotify(StratumJobBitcoin &sjob) const {
   return true;
 }
 
-bool StratumMessageBitcoin::parseMiningSetDifficulty(uint32_t *diff) const {
+bool StratumMessageBitcoin::parseMiningSetDifficulty(float *diff) const {
   if (method_ != "mining.set_difficulty")
     return false;
   *diff = diff_;
@@ -510,7 +511,7 @@ void UpStratumClientBitcoin::handleStratumMessage(const string &line) {
   }
 
   StratumJobBitcoin sjob;
-  uint32_t difficulty = 0u;
+  float difficulty = 0.0;
   uint32_t versionMask = 0u;
   std::set<string> serverCapabilities;
 
@@ -685,8 +686,8 @@ void StratumSessionBitcoin::sendFakeMiningNotify() {
   sendData(fakeNotify);
 }
 
-void StratumSessionBitcoin::sendMiningDifficulty(uint64_t diff) {
-  sendData(Strings::Format("{\"id\":null,\"method\":\"mining.set_difficulty\",\"params\":[%" PRIu64"]}\n", diff));
+void StratumSessionBitcoin::sendMiningDifficulty(float diff) {
+  sendData(Strings::Format("{\"id\":null,\"method\":\"mining.set_difficulty\",\"params\":[%d]}\n", diff));
 }
 
 void StratumSessionBitcoin::sendSubmitResponse(const string &idStr, int status) {
@@ -916,9 +917,10 @@ void StratumSessionBitcoin::handleRequest_Submit(const string &idStr,
   // submit share
   static_cast<StratumServerBitcoin *>(server_)->submitShare(share, this, idStr);
 
-  if (!upSession_.submitResponseFromServer_ || share.isFakeJob_) {
-    responseTrue(idStr);  // we assume shares are valid
-  }
+  responseTrue(idStr);
+  // if (!upSession_.submitResponseFromServer_ || share.isFakeJob_) {
+  //   responseTrue(idStr);  // we assume shares are valid
+  // }
 }
 
 void StratumSessionBitcoin::responseError(const string &idStr, int errCode) {

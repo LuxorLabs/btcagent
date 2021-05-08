@@ -68,7 +68,7 @@ class StratumMessageBitcoin : public StratumMessage {
   StratumJobBitcoin sjob_; // mining.notify
   string minerAgent_; // mining.subscribe
   string workerName_; // mining.authorize
-  uint32_t diff_; // mining.set_difficulty
+  float diff_; // mining.set_difficulty
   uint32_t versionMask_; // mining.set_version_mask
   std::set<string> serverCapabilities_; // agent.get_capabilities
 
@@ -90,7 +90,7 @@ public:
   bool parseMiningSubscribe(string &minerAgent) const;
   bool parseMiningAuthorize(string &workerName) const;
   bool parseMiningNotify(StratumJobBitcoin& sjob) const;
-  bool parseMiningSetDifficulty(uint32_t *diff) const;
+  bool parseMiningSetDifficulty(float *diff) const;
   bool parseMiningSetVersionMask(uint32_t *versionMask) const;
   bool parseMiningConfigure(uint32_t *versionMask) const;
   bool parseAgentGetCapabilities(std::set<string> &serverCapabilities) const;
@@ -143,7 +143,7 @@ public:
   using StratumSession::StratumSession;
   void sendMiningNotify() override;
   void sendFakeMiningNotify() override;
-  void sendMiningDifficulty(uint64_t diff) override;
+  void sendMiningDifficulty(float diff) override;
   void sendSubmitResponse(const string &idStr, int status) override;
   void sendVersionMask();
 

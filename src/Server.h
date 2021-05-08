@@ -208,7 +208,7 @@ private:
   // disconnect, just some miners which belong to this connection(UpStratumClient)
   // will reconnect instead of all miners reconnect to the Agent.
   //
-  static const int8_t kUpSessionCount_ = 5;  // MAX is 127
+  static const int8_t kUpSessionCount_ = 1;  // MAX is 127
   bool running_ = false;
 
   struct event *upEvTimer_ = nullptr;
@@ -279,8 +279,8 @@ public:
 
   void sendMiningNotifyToAll(const UpStratumClient *conn);
   void sendFakeMiningNotifyToAll(const UpStratumClient *conn);
-  void sendMiningDifficulty(UpStratumClient *upSession, uint64_t diff);
-  void sendMiningDifficulty(uint16_t sessionId, uint64_t diff);
+  void sendMiningDifficulty(UpStratumClient *upSession, float diff);
+  void sendMiningDifficulty(uint16_t sessionId, float diff);
   void sendSubmitResponse(const SubmitId &id, int status);
 
   UpStratumClient *findUpSession();
@@ -328,7 +328,7 @@ public:
   vector<SubmitId> submitIds_;
 
   bool poolDiffNeedUpdate_ = true;
-  uint64_t poolDefaultDiff_ = 0;
+  float poolDefaultDiff_ = 0.0;
   uint32_t extraNonce1_ = 0;  // session ID
 
   string userName_;
@@ -401,7 +401,7 @@ public:
   virtual ~StratumSession();
   virtual void sendMiningNotify() = 0;
   virtual void sendFakeMiningNotify() = 0;
-  virtual void sendMiningDifficulty(uint64_t diff) = 0;
+  virtual void sendMiningDifficulty(float diff) = 0;
   virtual void sendSubmitResponse(const string &idStr, int status) = 0;
 
   void recvData(struct evbuffer *buf);
