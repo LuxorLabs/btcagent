@@ -691,9 +691,12 @@ void StratumSessionBitcoin::sendMiningDifficulty(float diff) {
 }
 
 void StratumSessionBitcoin::sendSubmitResponse(const string &idStr, int status) {
+    LOG(WARNING) << Strings::Format("id string is: %s and status: %d", &idStr, status) << std::endl;
   if (StratumStatus::isAccepted(status)) {
+    LOG(WARNING) << Strings::Format("status received is: %d", status) << std::endl;
     responseTrue(idStr);
   } else {
+    LOG(WARNING) << Strings::Format("error status received is: %d", status) << std::endl;
     responseError(idStr, status);
   }
 }
@@ -917,10 +920,10 @@ void StratumSessionBitcoin::handleRequest_Submit(const string &idStr,
   // submit share
   static_cast<StratumServerBitcoin *>(server_)->submitShare(share, this, idStr);
 
-  responseTrue(idStr);
-  // if (!upSession_.submitResponseFromServer_ || share.isFakeJob_) {
-  //   responseTrue(idStr);  // we assume shares are valid
-  // }
+  // responseTrue(idStr);
+   if (!upSession_.submitResponseFromServer_ || share.isFakeJob_) {
+     responseTrue(idStr);  // we assume shares are valid
+   }
 }
 
 void StratumSessionBitcoin::responseError(const string &idStr, int errCode) {
